@@ -8,7 +8,7 @@ import { useProjects } from "@/hooks/useProjects"
 function App() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("All")
-  const { projects, updateProject } = useProjects()
+  const { projects, updateProject, deleteProject } = useProjects()
 
   const filteredProjects = useMemo(() => {
     return projects.filter((project) => {
@@ -45,7 +45,7 @@ function App() {
           />
 
           <div className="mt-8">
-            <ProjectGrid projects={filteredProjects} onUpdate={updateProject} />
+            <ProjectGrid projects={filteredProjects} onUpdate={updateProject} onDelete={deleteProject} />
           </div>
         </main>
 

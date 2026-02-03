@@ -49,5 +49,9 @@ export function useProjects() {
         setProjects(prev => prev.map(p => p.id === timestampedProject.id ? timestampedProject : p))
     }
 
-    return { projects, updateProject }
+    const deleteProject = (id: number) => {
+        setProjects(prev => prev.filter(p => p.id !== id))
+    }
+
+    return { projects, updateProject, deleteProject }
 }

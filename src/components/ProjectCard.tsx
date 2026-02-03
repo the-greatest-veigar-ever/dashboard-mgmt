@@ -12,16 +12,17 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog"
 import { format } from "date-fns"
-import { Github, ExternalLink, Pencil, CalendarIcon } from "lucide-react"
+import { Github, ExternalLink, Pencil, CalendarIcon, Trash2 } from "lucide-react"
 import type { Project } from "@/hooks/useProjects"
 import { cn } from "@/lib/utils"
 
 interface ProjectCardProps {
     project: Project
     onUpdate: (project: Project) => void
+    onDelete: (id: number) => void
 }
 
-export function ProjectCard({ project, onUpdate }: ProjectCardProps) {
+export function ProjectCard({ project, onUpdate, onDelete }: ProjectCardProps) {
     const [isOpen, setIsOpen] = useState(false)
     const [editedProject, setEditedProject] = useState<Project>(() => project)
 
@@ -212,13 +213,19 @@ export function ProjectCard({ project, onUpdate }: ProjectCardProps) {
                         </div>
                     </div>
 
-                    <DialogFooter className="px-6 py-4 border-t border-border bg-muted/30">
-                        <Button variant="ghost" onClick={() => setIsOpen(false)} className="text-muted-foreground">
-                            Cancel
+                    <DialogFooter className="px-6 py-4 border-t border-border bg-muted/30 flex justify-between">
+                        <Button variant="ghost" onClick={() => { onDelete(project.id); setIsOpen(false) }} className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
                         </Button>
-                        <Button onClick={handleSave}>
-                            Save
-                        </Button>
+                        <div className="flex gap-2">
+                            <Button variant="ghost" onClick={() => setIsOpen(false)} className="text-muted-foreground">
+                                Cancel
+                            </Button>
+                            <Button onClick={handleSave}>
+                                Save
+                            </Button>
+                        </div>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
