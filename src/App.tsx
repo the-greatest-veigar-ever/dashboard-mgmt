@@ -4,11 +4,13 @@ import { ProjectFilter } from "@/components/ProjectFilter"
 import { ProjectGrid } from "@/components/ProjectGrid"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { useProjects } from "@/hooks/useProjects"
+import { Button } from "@/components/ui/button"
+import { Plus } from "lucide-react"
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("All")
-  const { projects, updateProject, deleteProject } = useProjects()
+  const { projects, updateProject, deleteProject, addProject } = useProjects()
 
   const filteredProjects = useMemo(() => {
     return projects.filter((project) => {
@@ -44,7 +46,14 @@ function App() {
             setFilterStatus={setFilterStatus}
           />
 
-          <div className="mt-8">
+          <div className="mt-8 flex justify-between items-center mb-6">
+            <div></div>
+            <Button onClick={addProject} className="gap-2">
+              <Plus className="h-4 w-4" /> New Project
+            </Button>
+          </div>
+
+          <div>
             <ProjectGrid projects={filteredProjects} onUpdate={updateProject} onDelete={deleteProject} />
           </div>
         </main>

@@ -53,5 +53,22 @@ export function useProjects() {
         setProjects(prev => prev.filter(p => p.id !== id))
     }
 
-    return { projects, updateProject, deleteProject }
+    const addProject = () => {
+        const today = new Date().toISOString().split('T')[0]
+        const newProject: Project = {
+            id: Date.now(),
+            title: "New Project",
+            description: "",
+            status: "Planned",
+            techStack: [],
+            links: { demo: "", repo: "" },
+            date: today,
+            createdAt: today,
+            updatedAt: today
+        }
+        setProjects(prev => [newProject, ...prev])
+        return newProject
+    }
+
+    return { projects, updateProject, deleteProject, addProject }
 }
