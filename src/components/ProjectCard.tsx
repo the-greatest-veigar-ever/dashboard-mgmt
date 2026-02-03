@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -12,7 +12,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog"
 import { format } from "date-fns"
-import { Github, ExternalLink, Pencil, CalendarIcon, ChevronDown } from "lucide-react"
+import { Github, ExternalLink, Pencil, CalendarIcon } from "lucide-react"
 import type { Project } from "@/hooks/useProjects"
 import { cn } from "@/lib/utils"
 
