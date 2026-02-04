@@ -4,6 +4,8 @@ import { ProjectFilter } from "@/components/ProjectFilter"
 import { ProjectGrid } from "@/components/ProjectGrid"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { useProjects } from "@/hooks/useProjects"
+import { useProjectSearch } from "@/hooks/useProjectSearch"
+import { CommandMenu } from "@/components/CommandMenu"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 
@@ -12,17 +14,14 @@ function App() {
   const [filterStatus, setFilterStatus] = useState("All")
   const { projects, updateProject, deleteProject, addProject } = useProjects()
 
+  // 1. Fuzzy Search First
+  const searchResults = useProjectSearch(projects, searchTerm)
+
+  // 2. Then Filter by Status
   const filteredProjects = useMemo(() => {
-    return projects.filter((project) => {
-      const matchSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.techStack.some(t => t.toLowerCase().includes(searchTerm.toLowerCase()))
-
-      const matchStatus = filterStatus === "All" || project.status === filterStatus
-
-      return matchSearch && matchStatus
-    })
-  }, [searchTerm, filterStatus, projects])
+    if (filterStatus === "All") return searchResults
+    return searchResults.filter(p => p.status === filterStatus)
+  }, [searchResults, filterStatus])
 
   const totalProjects = projects.length
   const completedProjects = projects.filter(p => p.status === "Completed").length
@@ -30,6 +29,7 @@ function App() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-foreground selection:text-background p-4 md:p-8 lg:p-12 font-sans overflow-x-hidden transition-colors duration-300">
       <div className="max-w-[1600px] mx-auto relative">
+        <CommandMenu />
         <div className="absolute top-0 right-0 z-50">
           <ThemeToggle />
         </div>

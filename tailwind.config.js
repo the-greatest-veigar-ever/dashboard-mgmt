@@ -55,8 +55,8 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
-        heading: ["Space Grotesk", "sans-serif"],
+        sans: ["Manrope", "sans-serif"],
+        heading: ["Outfit", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       transitionTimingFunction: {
