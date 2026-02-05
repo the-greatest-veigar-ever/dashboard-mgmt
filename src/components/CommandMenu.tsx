@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Command } from "cmdk"
-import { Calculator, Calendar, CreditCard, Settings, Smile, User, Search, Monitor, Moon, Sun, Laptop } from "lucide-react"
+import { Calculator, Settings, User, Search, Moon, Sun, Laptop } from "lucide-react"
 import { useProjects } from "../hooks/useProjects"
 
 export function CommandMenu() {
