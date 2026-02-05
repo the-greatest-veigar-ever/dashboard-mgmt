@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Command } from "cmdk"
-import { Calculator, Settings, User, Search, Moon, Sun, Laptop } from "lucide-react"
+import { Calculator, Settings, User, Search, Moon, Sun, Laptop, FileJson } from "lucide-react"
 import { useProjects } from "../hooks/useProjects"
 
 export function CommandMenu() {
@@ -101,6 +101,15 @@ export function CommandMenu() {
                         <Settings className="mr-2 h-4 w-4" />
                         <span>Settings</span>
                         <span className="ml-auto text-xs tracking-widest text-muted-foreground">CMD+S</span>
+                    </Command.Item>
+                    <Command.Item onSelect={() => {
+                        const json = JSON.stringify(projects, null, 4)
+                        navigator.clipboard.writeText(json)
+                        setOpen(false)
+                        alert("Projects JSON copied to clipboard! Paste this into public/projects.json")
+                    }} className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-2 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground transition-colors">
+                        <FileJson className="mr-2 h-4 w-4" />
+                        <span>Export Projects JSON</span>
                     </Command.Item>
                 </Command.Group>
             </Command.List>

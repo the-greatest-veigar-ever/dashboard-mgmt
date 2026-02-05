@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import defaultProjects from '@/data/projects.json'
+
 
 export interface Project {
     id: number
@@ -17,29 +17,61 @@ export interface Project {
 }
 
 export function useProjects() {
-    // Initialize from localStorage or fallback to default data
-    const [projects, setProjects] = useState<Project[]>(() => {
-        const saved = localStorage.getItem('projects')
-        let initialData = defaultProjects
-        if (saved) {
+    const [projects, setProjects] = useState<Project[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        const loadProjects = async () => {
+            // 1. Try to load from localStorage first (prio user edits)
+            const saved = localStorage.getItem('projects')
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved)
+                    const sanitized = parsed.map((p: any) => ({
+                        ...p,
+                        createdAt: p.createdAt || p.date || new Date().toISOString().split('T')[0],
+                        updatedAt: p.updatedAt || new Date().toISOString().split('T')[0]
+                    }))
+                    setProjects(sanitized)
+                    setIsLoading(false)
+                    return
+                } catch (e) {
+                    console.error("Failed to parse projects from localStorage", e)
+                }
+            }
+
+            // 2. If no localStorage, fetch from public/projects.json
             try {
-                initialData = JSON.parse(saved)
-            } catch (e) {
-                console.error("Failed to parse projects from localStorage", e)
+                // Determine base path for GitHub Pages or local dev
+                const basePath = import.meta.env.BASE_URL
+                const response = await fetch(`${basePath}projects.json`)
+                if (!response.ok) throw new Error('Failed to fetch projects')
+
+                const data = await response.json()
+                const sanitized = data.map((p: any) => ({
+                    ...p,
+                    createdAt: p.createdAt || p.date || new Date().toISOString().split('T')[0],
+                    updatedAt: p.updatedAt || new Date().toISOString().split('T')[0]
+                }))
+                setProjects(sanitized)
+                // Sync initial fetch to localStorage so subsequent edits work on this data
+                localStorage.setItem('projects', JSON.stringify(sanitized))
+            } catch (error) {
+                console.error("Error loading projects:", error)
+            } finally {
+                setIsLoading(false)
             }
         }
-        // Ensure all projects have at least a date, treat existing 'date' als createdAt
-        return initialData.map((p: any) => ({
-            ...p,
-            createdAt: p.createdAt || p.date || new Date().toISOString().split('T')[0],
-            updatedAt: p.updatedAt || new Date().toISOString().split('T')[0]
-        }))
-    })
 
-    // Persist to localStorage whenever projects change
+        loadProjects()
+    }, [])
+
+    // Persist to localStorage whenever projects change (after initial load)
     useEffect(() => {
-        localStorage.setItem('projects', JSON.stringify(projects))
-    }, [projects])
+        if (!isLoading && projects.length > 0) {
+            localStorage.setItem('projects', JSON.stringify(projects))
+        }
+    }, [projects, isLoading])
 
     const updateProject = (updatedProject: Project) => {
         const timestampedProject = {
